@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	htmlftp "github.com/ksunhokim123/htmlftp/server/htmlftp"
+	mouse "github.com/ksunhokim123/mouse-hosting/server/mouse"
 )
 
-var Service *htmlftp.Service
+var Service *mouse.Service
 var Routes *mux.Router
 
-func Init(allowedDomains []string, service *htmlftp.Service) {
+func Init(allowedDomains []string, service *mouse.Service) {
 	Service = service
 	Routes = mux.NewRouter()
 

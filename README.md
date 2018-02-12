@@ -1,4 +1,4 @@
-# HTMLFTP
+# mouse-hosting
 A hosting site that is used in HTML class
 
 ## Features

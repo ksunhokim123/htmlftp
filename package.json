@@ -1,5 +1,5 @@
 {
-  "name": "htmlftp",
+  "name": "mouse-hosting",
   "version": "1.0.0",
   "description": "abcd",
   "main": "client/index.tsx",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ksunhokim123/keyboard-practice.git"
+    "url": "git+https://github.com/ksunhokim123/mouse-hosting.git"
   },
   "author": "sunho kim",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ksunhokim123/keyboard-practice/issues"
+    "url": "https://github.com/ksunhokim123/mouse-hosting/issues"
   },
-  "homepage": "https://github.com/ksunhokim123/keyboard-practice#readme",
+  "homepage": "https://github.com/ksunhokim123/mouse-hosting#readme",
   "dependencies": {
     "@types/semantic-ui": "^2.2.6",
     "prop-types": "^15.6.0",
