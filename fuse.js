@@ -9,7 +9,7 @@ const fuse = FuseBox.init({
                CSSPlugin(),
                WebIndexPlugin({
                    template : "client/index.html",
-                   path: "assets/"
+                   path: "."
                  })
                  ]
 });
