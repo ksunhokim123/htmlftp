@@ -1,5 +1,5 @@
 # mouse-hosting
-A hosting site that is used in HTML class
+🐁 hosting site that is used in HTML class
 
 ## Features
  - Registering accounts using authorization keys
