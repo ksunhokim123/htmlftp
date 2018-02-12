@@ -3,3 +3,4 @@ server/cmd/cmd
 node_modules
 dist
 .fusebox
+server/server

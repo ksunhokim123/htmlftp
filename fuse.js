@@ -8,12 +8,13 @@ const fuse = FuseBox.init({
   plugins: [
                CSSPlugin(),
                WebIndexPlugin({
-                   template : "client/index.html"
+                   template : "client/index.html",
+                   path: "assets/"
                  })
                  ]
 });
 
 fuse.bundle("app")
-  .instructions("> index.ts");
+  .instructions("> index.tsx");
 
 fuse.run();
