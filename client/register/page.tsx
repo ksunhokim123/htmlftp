@@ -1,26 +1,25 @@
 import * as React from 'react';
-import { KeyInput } from './keyinput'
-import { Grid, Segment } from 'semantic-ui-react'
+import { KeyInput } from './keyinput';
+import { Step, Button, Icon, Grid, Segment, Header } from 'semantic-ui-react';
+import { RegisterStep } from './step'
 
 export const RegisterPage: React.StatelessComponent<{}> = (props) => {
   return (
     <div className="registerpage">
-    <Grid columns='equal'>
-    <Grid.Row>
-      <Grid.Column>
-        <KeyInput />
-        <div>asdfsaf</div>
-      </Grid.Column>
-      <Grid.Column>
-        <Segment>1</Segment>
-        <Segment>2</Segment>
-        </Grid.Column>
-        <Grid.Column>
-          <Segment>1</Segment>
-          <Segment>2</Segment>
-          </Grid.Column>
-      </Grid.Row>
-      </Grid>
+      <Header as='h5' attached='top'>
+        mouse-ftp register
+      </Header>
+        <Segment attached>
+          <KeyInput />
+        </Segment>
+        <Segment attached>
+        <Button animated='vertical'>
+          <Button.Content hidden>Source</Button.Content>
+          <Button.Content visible>
+            <Icon name='github' />
+          </Button.Content>
+        </Button>
+        </Segment>
     </div>
   );
 }

@@ -2,7 +2,7 @@
   "extends": "tslint:recommended",
   "rules": {
     "max-line-length": {
-      "options": [80]
+      "options": [100]
     },
     "quotemark": [true, "single"],
     "curly": [true, "ignore-same-line"],

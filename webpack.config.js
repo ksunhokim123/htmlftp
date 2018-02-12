@@ -26,7 +26,7 @@ module.exports = {
                 use: ['awesome-typescript-loader']
             },{
                  test:/\.(s*)css$/,
-                 use:['style-loader','css-loader', 'sass-loader']
+                 use:['style-loader','css-loader', 'sass-loader', 'import-glob-loader']
             },{
               test: /\.(ttf|eot|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
               loader: "file-loader?name=fonts/[hash].[ext]",
