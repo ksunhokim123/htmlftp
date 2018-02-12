@@ -1,8 +1,15 @@
 package htmlftp
 
+type Config struct {
+	UserName string
+	Password string
+	UseHTTPS bool
+}
+
 type Service struct {
 	UserContainer *UserContainer
 	KeyContainer  *KeyContainer
+	Config        *Config
 }
 
 func (sv *Service) Start() {
@@ -18,6 +25,10 @@ func NewService(userfile string, keyfile string) *Service {
 			Updaters: make(map[Type]*UserUpdater),
 		},
 		KeyContainer: new(KeyContainer),
+		Config: &Config{
+			UserName: "user",
+			Password: "pas",
+		},
 	}
 	sv.UserContainer.Updaters[FTP] = NewFTPUpdater()
 	return sv

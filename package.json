@@ -1,0 +1,27 @@
+{
+  "name": "htmlftp",
+  "version": "1.0.0",
+  "description": "abcd",
+  "main": "client/index.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksunhokim123/keyboard-practice.git"
+  },
+  "author": "sunho kim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ksunhokim123/keyboard-practice/issues"
+  },
+  "homepage": "https://github.com/ksunhokim123/keyboard-practice#readme",
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^2.7.1",
+    "fuse-box": "^3.1.3"
+  }
+}

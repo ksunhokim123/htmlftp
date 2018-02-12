@@ -9,7 +9,7 @@ func NewFTPUpdater() *UserUpdater {
 	return updater
 }
 
-func addUser(name string) error {
+func addUser(name string, password string) error {
 	return nil
 }
 

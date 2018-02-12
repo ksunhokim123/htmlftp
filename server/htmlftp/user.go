@@ -7,14 +7,14 @@ func e(str string) error {
 }
 
 type UserUpdater struct {
-	AddUser       func(name string) error
+	AddUser       func(name string, password string) error
 	RemoveUser    func(name string) error
 	ChangeSetting func(name string, key string, value string) error //TODO
 	StartService  func(users []*User) error
 	StopService   func(users []*User) error
 }
 
-func (uu *UserUpdater) SetAddUser(adduser func(name string) error) *UserUpdater {
+func (uu *UserUpdater) SetAddUser(adduser func(name string, password string) error) *UserUpdater {
 	uu.AddUser = adduser
 	return uu
 }
@@ -44,7 +44,7 @@ type UserContainer struct {
 	Updaters map[Type]*UserUpdater
 }
 
-func (uc *UserContainer) AddUser(name string, typ Type) error {
+func (uc *UserContainer) AddUser(name string, password string, typ Type) error {
 	if _, ok := uc.Users[name]; ok {
 		return e("Existing user")
 	}
@@ -53,7 +53,7 @@ func (uc *UserContainer) AddUser(name string, typ Type) error {
 		return e("Undefined type")
 	}
 
-	if err := updater.AddUser(name); err == nil {
+	if err := updater.AddUser(name, password); err == nil {
 		uc.Users[name] = &User{
 			Name: name,
 			Type: typ,

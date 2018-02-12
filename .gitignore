@@ -1,2 +1,4 @@
 server/cmd/ftpserver.py
 server/cmd/cmd
+node_modules
+dist
