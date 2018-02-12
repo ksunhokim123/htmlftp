@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Register } from './pages';
+import { RegisterPage } from './register';
 
 export const App: React.StatelessComponent<{}> = (props) => {
   return (
-      <Register />
+      <RegisterPage />
   );
 }

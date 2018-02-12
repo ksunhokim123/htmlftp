@@ -17,15 +17,29 @@
   },
   "homepage": "https://github.com/ksunhokim123/mouse-hosting#readme",
   "dependencies": {
-    "@types/semantic-ui": "^2.2.6",
+    "@types/node": "^9.4.5",
+    "@types/prop-types": "^15.5.2",
+    "@types/react": "^16.0.36",
+    "@types/react-dom": "^16.0.3",
+    "awesome-typescript-loader": "^3.4.1",
+    "css-loader": "^0.28.9",
+    "file-loader": "^1.1.6",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "semantic-ui-css": "^2.2.14",
+    "semantic-ui-react": "^0.78.2",
+    "style-loader": "^0.20.1",
+    "tslint": "^5.9.1"
   },
   "devDependencies": {
     "fuse-box": "^3.1.3",
-    "typescript": "^2.7.1"
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
+    "typescript": "^2.7.1",
+    "webpack": "^3.11.0",
+    "webpack-dev-server": "^2.11.1"
   }
 }

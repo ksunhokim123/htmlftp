@@ -1,0 +1,16 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "max-line-length": {
+      "options": [80]
+    },
+    "quotemark": [true, "single"],
+    "curly": [true, "ignore-same-line"],
+    "no-bitwise": false,
+    "object-literal-sort-keys": false,
+    "one-variable-per-declaration": false,
+    "interface-name": false,
+    "max-classes-per-file": false,
+    "member-access": true
+  }
+}

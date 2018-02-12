@@ -1,2 +1,1 @@
-export * from './admin';
-export * from './register';
+export * from './page';
