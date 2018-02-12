@@ -1,8 +1,8 @@
 package main
 
 import (
-	htmlftp "github.com/ksunhokim123/htmlftp/server"
 	"github.com/ksunhokim123/htmlftp/server/api"
+	htmlftp "github.com/ksunhokim123/htmlftp/server/htmlftp"
 )
 
 func main() {

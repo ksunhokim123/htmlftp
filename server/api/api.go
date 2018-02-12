@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	htmlftp "github.com/ksunhokim123/htmlftp/server"
+	htmlftp "github.com/ksunhokim123/htmlftp/server/htmlftp"
 )
 
 var Service *htmlftp.Service

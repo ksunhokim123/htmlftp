@@ -1,0 +1,9 @@
+{
+	"ImportPath": "github.com/ksunhokim123/htmlftp/server",
+	"GoVersion": "go1.9",
+	"GodepVersion": "v80",
+	"Packages": [
+		"./..."
+	],
+	"Deps": []
+}
