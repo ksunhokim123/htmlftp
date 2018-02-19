@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	mouse "github.com/ksunhokim123/mouse-hosting/server/mouse"
+	mouse "github.com/sunho/mouse-hosting/server/mouse"
 )
 
 var Service *mouse.Service
@@ -43,7 +43,7 @@ func basicAuth(h http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		if username != Service.Config.UserName || password != Service.Config.Password {
+		if username != Service.Config.Username || password != Service.Config.Password {
 			http.Error(w, "Not authorized", 401)
 			return
 		}

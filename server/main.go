@@ -1,15 +1,23 @@
 package main
 
 import (
-	"github.com/ksunhokim123/mouse-hosting/server/api"
-	mouse "github.com/ksunhokim123/mouse-hosting/server/mouse"
+	"os"
+	"os/signal"
+	"syscall"
+
+	"github.com/sunho/mouse-hosting/server/api"
+	mouse "github.com/sunho/mouse-hosting/server/mouse"
 )
 
 func main() {
-	sv := mouse.NewService("", "")
-	api.Init([]string{}, sv)
+	sv := mouse.NewService("config.yaml")
 	sv.Start()
+
+	api.Init([]string{}, sv)
 	api.StartServer()
-	for {
-	}
+
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	<-sc
+	sv.Stop()
 }

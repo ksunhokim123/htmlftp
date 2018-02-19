@@ -1,23 +1,29 @@
 package mouse
 
-//TODO seperate
-func NewFTPUpdater() *UserUpdater {
-	updater := &UserUpdater{}
-	updater = updater.SetAddUser(addUser)
-	updater = updater.SetRemoveUser(removeUser)
-	updater = updater.SetStartService(startService)
-	return updater
+import (
+	"os/exec"
+
+	"github.com/sunho/mouse-hosting/server/utils"
+)
+
+type FTPUpdater struct {
+	cmd *exec.Cmd
 }
 
-func addUser(name string, password string) error {
+func (fu *FTPUpdater) AddUser(user *User) error {
 	return nil
 }
 
-func removeUser(name string) error {
+func (fu *FTPUpdater) RemoveUser(name string) error {
 	return nil
 }
 
-func startService(users []*User) error {
-	go FTPRun()
+func (fu *FTPUpdater) StartService(config *Config) error {
+	address := config.FtpAddress
+	fu.cmd = utils.ExecCommand("mouseftp", "-fi", address.FTP.Ip, address.FTP.Port, "-ai", address.API.Ip, address.API.Port)
 	return nil
+}
+
+func (fu *FTPUpdater) StopService() {
+	fu.cmd.Process.Kill()
 }

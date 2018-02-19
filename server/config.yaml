@@ -1,0 +1,14 @@
+userfile: user.json
+keyfile: key.json
+username: test
+password: test
+ftp_address:
+  api:
+    ip: 127.0.0.1
+    port: 532
+  ftp:
+    ip: 127.0.0.1
+    port: 324
+address:
+  ip: 127.0.0.1
+  port: 3123
