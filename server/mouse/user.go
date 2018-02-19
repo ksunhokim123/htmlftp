@@ -1,13 +1,8 @@
 package mouse
 
 import (
-	"errors"
 	"log"
 )
-
-func e(str string) error {
-	return errors.New(str)
-}
 
 type User struct {
 	Name     string
@@ -40,7 +35,7 @@ func (uc *UserContainer) AddUser(name string, password string) error {
 
 	for _, updater := range uc.updaters {
 		if err := updater.AddUser(uc.Users[name]); err != nil {
-			log.Fatalf("Updater error")
+			log.Fatalf("Updater error %v", err)
 		}
 	}
 
@@ -54,7 +49,7 @@ func (uc *UserContainer) RemoveUser(name string) error {
 
 	for _, updater := range uc.updaters {
 		if err := updater.RemoveUser(name); err != nil {
-			panic("Updater error")
+			log.Fatalf("Updater error %v", err)
 		}
 	}
 

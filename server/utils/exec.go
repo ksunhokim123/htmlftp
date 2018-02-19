@@ -1,12 +1,13 @@
 package utils
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
 )
 
-func copyAndCapture(w io.Writer, r io.Reader) ([]byte, error) {
+func copyAndCapture(w io.Writer, r io.Reader) {
 	var out []byte
 	buf := make([]byte, 1024, 1024)
 	for {
@@ -16,32 +17,37 @@ func copyAndCapture(w io.Writer, r io.Reader) ([]byte, error) {
 			out = append(out, d...)
 			_, err := w.Write(d)
 			if err != nil {
-				return out, err
+				fmt.Println(out, " err:", err)
+				return
 			}
 		}
 		if err != nil {
+			fmt.Print(out)
 			if err == io.EOF {
-				err = nil
+				fmt.Println(" err:", err)
 			}
-			return out, err
+			return
 		}
 	}
 }
 
-func ExecCommand(name string, args ...string) *exec.Cmd {
+func ExecCommand(name string, args ...string) (*exec.Cmd, error) {
 	cmd := exec.Command(name, args...)
-	var stdout, stderr []byte
-	var errStdout, errStderr error
-	stdoutIn, _ := cmd.StdoutPipe()
+	stdoutIn, err := cmd.StdoutPipe()
+	if err != nil {
+		return nil, err
+	}
 	stderrIn, _ := cmd.StderrPipe()
-	cmd.Start()
+	// :thinking:
 
-	go func() {
-		stdout, errStdout = copyAndCapture(os.Stdout, stdoutIn)
-	}()
+	err = cmd.Start()
+	if err != nil {
+		return nil, err
+	}
 
-	go func() {
-		stderr, errStderr = copyAndCapture(os.Stderr, stderrIn)
-	}()
-	return cmd
+	go copyAndCapture(os.Stdout, stdoutIn)
+	go copyAndCapture(os.Stderr, stderrIn)
+
+	// IDEA to figure out does the errStdout matter
+	return cmd, nil
 }

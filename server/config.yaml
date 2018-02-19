@@ -5,10 +5,10 @@ password: test
 ftp_address:
   api:
     ip: 127.0.0.1
-    port: 532
+    port: 5323
   ftp:
     ip: 127.0.0.1
-    port: 324
+    port: 3243
 address:
   ip: 127.0.0.1
   port: 3123

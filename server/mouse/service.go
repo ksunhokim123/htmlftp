@@ -1,15 +1,32 @@
 package mouse
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 
 	yaml "gopkg.in/yaml.v2"
 )
 
+func e(str string) error {
+	return errors.New(str)
+}
+
 type Address struct {
 	Ip   string
 	Port string
+}
+
+func (ad Address) IsValid() bool {
+	if len(ad.Port) == 0 {
+		return false
+	}
+	return true
+}
+
+func (ad Address) String() string {
+	return ad.Ip + ":" + ad.Port
 }
 
 type Config struct {
@@ -32,9 +49,15 @@ type Service struct {
 
 func (sv *Service) Start() {
 	for _, updater := range sv.UserContainer.updaters {
-		updater.StartService(sv.Config)
+		err := updater.StartService(sv.Config)
+		if err != nil {
+			log.Fatalf(`error during serveice.start %v`, err)
+		}
 		for _, user := range sv.UserContainer.Users {
-			updater.AddUser(user)
+			err := updater.AddUser(user)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 	}
 }
@@ -52,10 +75,24 @@ func (sv *Service) AddDefaultUpdaters() {
 func NewService(configfile string) *Service {
 	file, err := ioutil.ReadFile(configfile)
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatalf(`config file open error %v`, err)
 	}
+
 	config := Config{}
-	yaml.Unmarshal(file, &config)
+	err = yaml.Unmarshal(file, &config)
+	if err != nil {
+		log.Fatalf(`config file parse error %v`, err)
+	}
+
+	if !config.FtpAddress.API.IsValid() {
+		log.Fatal("FTP API address is not valid")
+	}
+	if !config.FtpAddress.FTP.IsValid() {
+		log.Fatal("FTP FTP address is not valid")
+	}
+	if !config.Address.IsValid() {
+		log.Fatal("address is not valid")
+	}
 
 	sv := &Service{
 		UserContainer: &UserContainer{

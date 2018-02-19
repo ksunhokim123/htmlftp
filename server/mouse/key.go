@@ -16,7 +16,7 @@ func pickOne() string {
 func (kc *KeyContainer) Generate() string {
 	var candidate string
 	for {
-		candidate = fmt.Sprintf(`%s-%s-%s-%s`, pickOne(), pickOne(), pickOne(), pickOne())
+		candidate = fmt.Sprintf(`%s-%s-%s`, pickOne(), pickOne(), pickOne())
 		if kc.Exist(candidate) == -1 {
 			break
 		}
