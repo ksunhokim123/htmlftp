@@ -5,4 +5,4 @@ export const App: React.StatelessComponent<{}> = (props) => {
   return (
       <RegisterPage />
   );
-}
+};

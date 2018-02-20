@@ -1,165 +1,84 @@
 package api
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
+	"time"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/static"
+	"github.com/gin-gonic/gin"
 	mouse "github.com/sunho/mouse-hosting/server/mouse"
 )
 
 var Service *mouse.Service
-var Routes *mux.Router
+var Routes *gin.Engine
 
-func Init(allowedDomains []string, service *mouse.Service) {
+func Start(allowedDomains []string, service *mouse.Service) {
 	Service = service
-	Routes = mux.NewRouter()
-
-	Routes.HandleFunc("/api/users", AddUser).Methods("POST")
-	Routes.HandleFunc("/api/keys/{key:[a-z-]+}", GetKey).Methods("GET")
-
-	Routes.HandleFunc("/api/users", useBasicAuth(RetrieveUsers)).Methods("GET")
-	Routes.HandleFunc("/api/users/{id:[a-z0-9]+}", useBasicAuth(GetUser)).Methods("GET")
-	Routes.HandleFunc("/api/users/{id:[a-z0-9]+}", useBasicAuth(RemoveUser)).Methods("DELETE")
-	Routes.HandleFunc("/api/keys", useBasicAuth(RetrieveKeys)).Methods("GET")
-	Routes.HandleFunc("/api/keys/{key:[a-z-]+}", useBasicAuth(RemoveKey)).Methods("DELETE")
-	Routes.HandleFunc("/api/keygen", useBasicAuth(GenerateKey)).Methods("GET")
-}
-
-func useBasicAuth(h http.HandlerFunc) http.HandlerFunc {
-	return use(h, basicAuth)
-}
-
-func use(h http.HandlerFunc, middleware ...func(http.HandlerFunc) http.HandlerFunc) http.HandlerFunc {
-	for _, m := range middleware {
-		h = m(h)
+	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+	api := r.Group("/api")
+	{
+		api.POST("/users", addUserEndpoint)
+		api.GET("/keys/:key", getKeyEndpoint)
+		admin := api.Group("/admin", gin.BasicAuth(gin.Accounts{
+			Service.Config.Username: Service.Config.Password,
+		}))
+		{
+			admin.POST("/keygen", keyGenEndpoint)
+			admin.GET("/keys", retriveKeysEndpoint)
+		}
 	}
-	return h
+	//TODO seperate this
+	r.Use(static.Serve("/", static.LocalFile("home", true)))
+	go r.Run(Service.Config.Address.String())
 }
 
-func basicAuth(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
-		username, password, authOK := r.BasicAuth()
-		if authOK == false {
-			http.Error(w, "Not authorized", 401)
-			return
-		}
-
-		if username != Service.Config.Username || password != Service.Config.Password {
-			http.Error(w, "Not authorized", 401)
-			return
-		}
-
-		h.ServeHTTP(w, r)
+func getKeyEndpoint(ctx *gin.Context) {
+	key := ctx.Param("key")
+	if Service.KeyContainer.Exist(key) == -1 {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "no such key"})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{"error": "success"})
 	}
 }
 
-func StartServer() {
-	address := Service.Config.Address.String()
-	fmt.Println("running:", address)
-	go func() {
-		if err := http.ListenAndServe(address, Routes); err != nil {
-			fmt.Printf("API server http error: %v", err)
-		}
-	}()
+type addUserRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Key      string `json:"key"`
 }
 
-func AddUser(w http.ResponseWriter, r *http.Request) {
-	username := r.FormValue("username")
-	password := r.FormValue("password")
-	key := r.FormValue("key")
-	response := struct {
-		Error string `json:"error"`
-	}{
-		Error: "success",
-	}
-
-	if len(username) == 0 {
-		response.Error = "empty username"
-	} else if len(password) == 0 {
-		response.Error = "empty password"
-	} else if len(key) == 0 {
-		response.Error = "empty key"
-	} else if keyindex := Service.KeyContainer.Exist(key); keyindex == -1 {
-		response.Error = "no such key"
-	} else if err := Service.UserContainer.AddUser(username, password); err != nil {
-		response.Error = err.Error()
+func addUserEndpoint(ctx *gin.Context) {
+	var request addUserRequest
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	} else if keyindex := Service.KeyContainer.Exist(request.Key); keyindex == -1 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "no such key"})
+	} else if err = Service.UserContainer.AddUser(request.Username, request.Password); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
 		Service.KeyContainer.Remove(keyindex)
+		ctx.JSON(http.StatusOK, gin.H{"error": "success"})
 	}
-
-	json, _ := json.Marshal(response)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(json)
 }
 
-//TODO improve error handling
-func GetKey(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	response := struct {
-		Error string `json:"error"`
-		Exist bool   `json:"exist"`
-	}{
-		Error: "success",
-		Exist: false,
-	}
-	key := vars["key"]
-	if Service.KeyContainer.Exist(key) != -1 {
-		response.Exist = true
-	}
-
-	json, _ := json.Marshal(response)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(json)
-}
-
-func RetrieveKeys(w http.ResponseWriter, r *http.Request) {
-	keyList := []string{}
-	for _, key := range *(Service.KeyContainer) {
-		keyList = append(keyList, key)
-	}
-	fmt.Println(keyList)
-	response := struct {
-		Error   string   `json:"error"`
-		KeyList []string `json:"keys"`
-	}{
-		Error:   "success",
-		KeyList: keyList,
-	}
-
-	json, _ := json.Marshal(response)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(json)
-}
-
-func GenerateKey(w http.ResponseWriter, r *http.Request) {
+func keyGenEndpoint(ctx *gin.Context) {
 	key := Service.KeyContainer.Generate()
-	response := struct {
-		Error string `json:"error"`
-		Key   string `json:"key"`
-	}{
-		Error: "success",
-		Key:   key,
+	ctx.JSON(http.StatusCreated, gin.H{"error": "success", "key": key})
+}
+
+func retriveKeysEndpoint(ctx *gin.Context) {
+	keys := []string{}
+	for _, key := range *Service.KeyContainer {
+		keys = append(keys, key)
 	}
-	json, _ := json.Marshal(response)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(json)
-}
-
-func RetrieveUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "unimplemented")
-}
-
-func GetUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "unimplemented")
-}
-
-func RemoveKey(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "unimplemented")
-}
-
-func RemoveUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "unimplemented")
+	ctx.JSON(http.StatusOK, gin.H{"error": "success", "keys": keys})
 }

@@ -12,13 +12,11 @@ import (
 func main() {
 	sv := mouse.NewService("config.yaml")
 	sv.Start()
-
-	api.Init([]string{}, sv)
-	api.StartServer()
+	defer sv.Stop()
+	api.Start([]string{}, sv)
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
-	sv.Stop()
 }

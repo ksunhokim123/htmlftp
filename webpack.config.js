@@ -8,7 +8,7 @@ module.exports = {
     output:{
         filename: 'bundle.js',
         path: resolve(__dirname, 'dist'),
-        publicPath: ''
+        publicPath: '.'
     },
     resolve:{
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.css']
@@ -16,9 +16,8 @@ module.exports = {
     context: resolve(__dirname, 'client'),
     devtool: 'inline-source-map',
     devServer:{
-        hot: true,
         contentBase: resolve(__dirname, 'dist'),
-        publicPath: ''
+        publicPath: '/assets/'
     },
     module: {
         rules:[{

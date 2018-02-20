@@ -1,7 +1,6 @@
 package mouse
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 	"os/exec"
@@ -15,8 +14,7 @@ type FTPUpdater struct {
 }
 
 func (fu *FTPUpdater) AddUser(user *User) error {
-	fmt.Println(fu.ftpapi)
-	resp, err := http.PostForm(fu.ftpapi+"/users",
+	_, err := http.PostForm(fu.ftpapi+"/users",
 		url.Values{"username": {user.Name}, "password": {user.Password}})
 	if err != nil {
 		return err
