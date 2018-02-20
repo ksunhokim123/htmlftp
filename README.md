@@ -8,4 +8,4 @@
  - Basic web app(html, js, css)
  - Virtual FTP account
 
-## Installation
+## Installatio
