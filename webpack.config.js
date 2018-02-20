@@ -1,5 +1,6 @@
 var {resolve} = require('path');
 var webpack =require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: [
@@ -8,7 +9,6 @@ module.exports = {
     output:{
         filename: 'bundle.js',
         path: resolve(__dirname, 'dist'),
-        publicPath: '.'
     },
     resolve:{
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.css']
@@ -35,5 +35,7 @@ module.exports = {
             }
         ]
     },
-    plugins: []
+    plugins: [new HtmlWebpackPlugin({
+      title: 'mouse-hosting',
+    })]
 };

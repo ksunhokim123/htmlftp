@@ -7,8 +7,7 @@ ftp_address:
     ip: 127.0.0.1
     port: 5323
   ftp:
-    ip: 127.0.0.1
-    port: 3243
+    port: 21
 address:
   ip: 127.0.0.1
   port: 5353

@@ -1,10 +1,12 @@
 package mouse
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"time"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -50,6 +52,7 @@ type Service struct {
 func (sv *Service) Start() {
 	for _, updater := range sv.UserContainer.updaters {
 		err := updater.StartService(sv.Config)
+		time.Sleep(time.Second * 5)
 		if err != nil {
 			log.Fatalf(`error during serveice.start %v`, err)
 		}
@@ -68,6 +71,13 @@ func (sv *Service) Stop() {
 	}
 }
 
+func (sv *Service) Save() {
+	data1, _ := json.Marshal(sv.UserContainer.Users)
+	data2, _ := json.Marshal(sv.KeyContainer)
+	ioutil.WriteFile(sv.Config.Userfile, data1, 0644)
+	ioutil.WriteFile(sv.Config.Keyfile, data2, 0644)
+}
+
 func (sv *Service) AddDefaultUpdaters() {
 	sv.UserContainer.AddUpdater(&FTPUpdater{})
 }
@@ -84,6 +94,20 @@ func NewService(configfile string) *Service {
 		log.Fatalf(`config file parse error %v`, err)
 	}
 
+	var usermap map[string]*User
+	file, err = ioutil.ReadFile(config.Userfile)
+	if err != nil {
+		log.Fatalf(`user file open error %v`, err)
+	}
+	json.Unmarshal(file, &usermap)
+
+	var keymap *KeyContainer
+	file, err = ioutil.ReadFile(config.Keyfile)
+	if err != nil {
+		log.Fatalf(`key file open error %v`, err)
+	}
+	json.Unmarshal(file, &keymap)
+
 	if !config.FtpAddress.API.IsValid() {
 		log.Fatal("FTP API address is not valid")
 	}
@@ -96,10 +120,10 @@ func NewService(configfile string) *Service {
 
 	sv := &Service{
 		UserContainer: &UserContainer{
-			Users:    make(map[string]*User),
+			Users:    usermap,
 			updaters: []UserUpdater{},
 		},
-		KeyContainer: new(KeyContainer),
+		KeyContainer: keymap,
 		Config:       &config,
 	}
 

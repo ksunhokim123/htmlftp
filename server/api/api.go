@@ -38,6 +38,7 @@ func Start(allowedDomains []string, service *mouse.Service) {
 	}
 	//TODO seperate this
 	r.Use(static.Serve("/", static.LocalFile("home", true)))
+	r.Use(static.Serve("/register", static.LocalFile("../dist", true)))
 	go r.Run(Service.Config.Address.String())
 }
 
@@ -66,13 +67,15 @@ func addUserEndpoint(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
 		Service.KeyContainer.Remove(keyindex)
-		ctx.JSON(http.StatusOK, gin.H{"error": "success"})
+		ctx.JSON(http.StatusCreated, gin.H{"error": "success"})
 	}
+	Service.Save()
 }
 
 func keyGenEndpoint(ctx *gin.Context) {
 	key := Service.KeyContainer.Generate()
 	ctx.JSON(http.StatusCreated, gin.H{"error": "success", "key": key})
+	Service.Save()
 }
 
 func retriveKeysEndpoint(ctx *gin.Context) {

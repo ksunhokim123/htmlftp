@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Button, Container, Form, Header, Icon } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Icon, Input } from 'semantic-ui-react';
 
 interface State {
   key: string;
+  error: boolean;
 }
 
 interface Props {
@@ -14,6 +15,7 @@ export class KeyInput extends React.Component<Props, State> {
     super(props);
     this.state = {
       key: '',
+      error: false,
     };
   }
 
@@ -27,6 +29,11 @@ export class KeyInput extends React.Component<Props, State> {
 
   public onSumbit(e: any) {
     e.preventDefault();
+    this.setState(
+      {
+        error: false,
+      }
+    );
     fetch('http://127.0.0.1:5353/api/keys/' + this.state.key, {
           method: 'GET',
           headers: {
@@ -37,6 +44,12 @@ export class KeyInput extends React.Component<Props, State> {
      .then((status) => {
        if (status === 200) {
          this.props.next(this.state.key);
+       } else if (status === 404) {
+         this.setState(
+           {
+             error: true,
+           }
+         );
        }
      });
 
@@ -45,10 +58,11 @@ export class KeyInput extends React.Component<Props, State> {
   public render() {
     return (
       <Form onSubmit={this.onSumbit.bind(this)}>
-        <Form.Field>
-          <label>Key</label>
-          <input placeholder='key' onChange={this.onKeyChange.bind(this)} />
-        </Form.Field>
+        <Form.Group widths='equal'>
+          <Form.Field name = 'key' control={Input}
+          error={this.state.error ? true : false} label='key' placeholder='key'
+          onChange={this.onKeyChange.bind(this)} />
+        </Form.Group>
         <Button fluid type='submit' onClick={this.onSumbit.bind(this)}>Submit</Button>
       </Form>
     );

@@ -55,14 +55,30 @@ export class RegisterPage extends React.Component<{}, State> {
                   return <UserForm akey={this.state.key} next={this.resultStep.bind(this)}/>;
                 }
                 default: {
-                  return <div>asdasdads</div>;
+                  return (
+                    <div>
+                    <Segment.Group>
+                      <Segment>
+                        <a href={'https://sunho.kim/mouse/' + this.state.endpoint}>
+                        {'https://sunho.kim/mouse/' + this.state.endpoint}
+                        </a>
+                      </Segment>
+                      <Segment>sunho.kim</Segment>
+                      <Segment>{this.state.endpoint}</Segment>
+                      <Segment>*****</Segment>
+                    </Segment.Group>
+                    </div>
+                  );
                 }
               }
             })()
           }
         </Segment>
         <Segment attached>
-        <Button animated='vertical'>
+        <Button animated='vertical'
+        onClick={() => {
+          window.location.replace('https://github.com/sunho/mouse-hosting');
+        }}>
           <Button.Content hidden>Source</Button.Content>
           <Button.Content visible>
             <Icon name='github' />
