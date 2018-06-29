@@ -1,4 +1,4 @@
-# mouse-hosting
+# Introduction
 🐁 hosting site that is used in HTML class
 
 ## Features
