@@ -18,7 +18,7 @@ go get github.com/sunho/mouse-ftp/server
 
 ## mouseftp
 
-Mouse-hosting requires [mouseftp](https://github.com/sunho/mouse-ftp) in order to support ftp server. You can follow the guideline there.
+Go to mouse-ftp and follow the guide to install it.
 
 ## api server
 
